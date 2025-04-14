@@ -199,6 +199,10 @@
         document.querySelectorAll('.cell-img').forEach((el)=>{
             el.src = "";
         })
+        
+        document.querySelectorAll('.cell-prot').forEach((el)=>{
+            el.dataset.img = "0";
+        })
     }
 
 
@@ -227,6 +231,8 @@
     }
 
     function cellTap(prot) {
+        if (!prot.dataset.img || prot.dataset.img == "0") return;
+
         const selectedImg = parseInt(prot.dataset.img);
         let percent = 0;
         if (selected.includes(selectedImg)) {
