@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+ <head>
+   <title>!DOCTYPE</title>
+   <meta charset="utf-8">
+   <style>
+    body {
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+    }
+    #game {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+
+        border: 1px solid green;
+    }
+    .cell {
+        width: 16%;
+        height: 20%;
+        display: inline-block;
+        position: relative;
+        margin: 0;
+        padding: 0;
+
+        box-sizing: border-box;
+        border: 1px solid red;
+    }
+    .cell-prot {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 255, 0, 0.1);
+        z-index: 10;
+    }
+    .cell-img {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        height: 100%;
+        transform: translate(-50%, 0%);
+        object-fit: fill;
+    }
+   </style>
+ </head>
+ <body>
+    <div id="info">
+        <h1 id="infoTitle"></h1>
+        <div id="infoText"></div>
+    </div>
+
+    <div id="game">
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img"/>
+        </div>
+    </div>
+ </body>
+ <script>
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+    }
+
+    var res1 = 0;
+    var res2 = 0;
+    var res3 = 0;
+
+    var game = 1;
+    var selected = [];
+    var step = 3;
+    const imgElements = document.querySelectorAll('.cell-img');
+
+    function clearImgs() {
+        document.querySelectorAll('.cell-img').forEach((el)=>{
+            el.src = "";
+        })
+    }
+
+
+    function setImgs() {
+        let imgs = selected.slice();
+        while (imgs.length < step) {
+            let img = getRandomInt(60)+1;
+            if (!imgs.includes(img)) imgs.push(img);
+        }
+        
+        let places = []
+        while (places.length < step) {
+            let place = getRandomInt(30);
+            if (!places.includes(place)) places.push(place);
+        }
+
+        places.forEach(element => {
+            const imgElement = imgElements[element];
+            const imgIndex = getRandomInt(imgs.length);
+            const imgName = imgs[imgIndex];
+            imgs.splice(imgIndex, 1);
+
+            imgElement.src = "./pica/"+imgName+".bmp";
+            imgElement.parentElement.querySelector('.cell-prot').dataset.img = imgName;
+        });
+    }
+
+    function cellTap(prot) {
+        const selectedImg = parseInt(prot.dataset.img);
+        let percent = 0;
+        if (selected.includes(selectedImg)) {
+            if (game == 1) {
+                res1 = selected.length;
+                percent = res1/30*100;
+                alert("Крутой! Ты прошел испытание на "+percent+"%! Попробуй еще раз чтобы улучшить результат")
+            } else if (game == 2) {
+                res2 = selected.length;
+                percent = res2/30*100;
+                if (res2>=res1) {
+                    alert("Красавчик, ты прокачался! Теперь испытание пройдено на "+percent+"%! Попробуй еще раз чтобы улучшить результат");
+                } else {
+                    alert("Так не пойдет! Теперь испытание пройдено на "+percent+"%! Попробуй еще раз чтобы улучшить результат");
+                }
+            } else if (game == 3) {
+                res3 = selected.length;
+                percent = res3/30*100;
+                if (res3>=res1 && res3>=res2) {
+                    alert("Красавчик, ты прокачался! Теперь испытание пройдено на "+percent+"%! Попробуй еще раз чтобы улучшить результат");
+                } else {
+                    alert("Так не пойдет! Теперь испытание пройдено на "+percent+"%! Давай с самого начала");
+                }
+            }
+            game+=1;
+            if (game > 3) game = 1;
+            selected = [];
+            step = 3;
+        } else {
+            selected.push(selectedImg);
+            step+=1;
+        }
+        console.log(prot, selectedImg, selected, game, step);
+        clearImgs();
+        setImgs();
+    }
+    alert("Выбирай каждый раз новую картинку");
+
+    setImgs();
+ </script> 
+</html>
