@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
  <head>
-   <title>!DOCTYPE</title>
+   <title>Запоминай!</title>
    <meta charset="utf-8">
    <style>
     body {
@@ -44,11 +44,14 @@
     }
     .cell-img {
         position: absolute;
-        top: 0;
+        top: 50%;
         left: 50%;
-        height: 100%;
-        transform: translate(-50%, 0%);
+        max-width: 100%;
+        max-height: 100%;
+        transform: translate(-50%, -50%);
         object-fit: fill;
+
+        border: 1px solid blue;
     }
    </style>
  </head>
