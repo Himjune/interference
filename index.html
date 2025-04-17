@@ -25,6 +25,7 @@
             margin: 0;
             box-sizing: border-box;
 
+            background-color: white;
             border: 1px solid green;
         }
 
@@ -37,6 +38,7 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
         }
+
         #rotationProtText {
             color: white;
             font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -51,6 +53,9 @@
 
         @media (orientation: landscape) {
             #rotationProt {
+                display: block;
+            }
+            #game:fullscreen #rotationProt {
                 display: none;
             }
         }
@@ -254,6 +259,7 @@
         })
     }
 
+    const gameElement = document.getElementById("game");
 
     function setImgs() {
         let imgs = selected.slice();
@@ -318,7 +324,21 @@
         clearImgs();
         setImgs();
     }
-    alert("Выбирай каждый раз новую картинку");
+    //alert("Выбирай каждый раз новую картинку");
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+
+    document.getElementById('rotationProt').addEventListener(
+        "click", (e) => {
+            gameElement.requestFullscreen();
+        },
+        false,
+    );
 
     setImgs();
 </script>
