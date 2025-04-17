@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <style>
         body {
+            position: relative;
             padding: 0;
             margin: 0;
             width: 100%;
@@ -23,6 +24,28 @@
             box-sizing: border-box;
 
             border: 1px solid green;
+        }
+
+        #rotationProt {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            opacity: 0.2;
+        }
+
+        @media (orientation: landscape) {
+            #rotationProt {
+                display: none;
+            }
+        }
+
+        @media (orientation: portrait) {
+            #rotationProt {
+                display: block;
+            }
         }
 
         .cell {
@@ -68,6 +91,10 @@
     </div>
 
     <div id="game">
+        <div id="rotationProt">
+            <div id="rotationProtText">Поверни экран в горизонтальное положение и кликни, чтобы развернуть на весь экран
+            </div>
+        </div>
         <div class="cell">
             <div class="cell-prot" onclick="cellTap(this)"></div>
             <img class="cell-img" />
