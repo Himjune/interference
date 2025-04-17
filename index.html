@@ -6,9 +6,6 @@
     <meta charset="utf-8">
     <style>
         body {
-            background-color: beige;
-            border: 3px solid red;
-            box-sizing: border-box;
             padding: 0;
             margin: 0;
             width: 100vw;
@@ -23,10 +20,7 @@
             height: 100%;
             padding: 0;
             margin: 0;
-            box-sizing: border-box;
-
             background-color: white;
-            border: 1px solid green;
         }
 
         #rotationProt {
@@ -66,6 +60,13 @@
             }
         }
 
+        #cells {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
         .cell {
             width: 16.666%;
             height: 20%;
@@ -73,9 +74,6 @@
             position: relative;
             margin: 0;
             padding: 0;
-
-            box-sizing: border-box;
-            border: 1px solid red;
         }
 
         .cell-prot {
@@ -84,7 +82,6 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 255, 0, 0.1);
             z-index: 10;
         }
 
@@ -96,8 +93,6 @@
             height: 100%;
             object-fit: fill;
             object-position: center;
-
-            border: 1px solid blue;
         }
     </style>
 </head>
@@ -113,125 +108,8 @@
             <div id="rotationProtText">Поверни экран в горизонтальное положение и кликни, чтобы развернуть на весь экран
             </div>
         </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
-        </div>
-        <div class="cell">
-            <div class="cell-prot" onclick="cellTap(this)"></div>
-            <img class="cell-img" />
+        <div id="cells">
+
         </div>
     </div>
 </body>
@@ -247,7 +125,7 @@
     var game = 1;
     var selected = [];
     var step = 3;
-    const imgElements = document.querySelectorAll('.cell-img');
+    var imgElements = document.querySelectorAll('.cell-img');
 
     function clearImgs() {
         document.querySelectorAll('.cell-img').forEach((el) => {
@@ -260,6 +138,21 @@
     }
 
     const gameElement = document.getElementById("game");
+
+    const CELL_TEMPLATE = `
+        <div class="cell">
+            <div class="cell-prot" onclick="cellTap(this)"></div>
+            <img class="cell-img" src=""/>
+        </div>
+    `
+    function createImgs () {
+        let html = ""
+        for (let index = 0; index < 6*5; index++) {
+            html+= CELL_TEMPLATE;
+        }
+        document.getElementById("cells").innerHTML = html;
+        imgElements = document.querySelectorAll('.cell-img');
+    }
 
     function setImgs() {
         let imgs = selected.slice();
@@ -340,6 +233,7 @@
         false,
     );
 
+    createImgs();
     setImgs();
 </script>
 
