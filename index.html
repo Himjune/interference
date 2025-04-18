@@ -101,6 +101,22 @@
         .cell-img-empty {
             visibility: hidden;
         }
+
+        #changer {
+            position: absolute;
+            top: -35%;
+            left: 0;
+            width: 100%;
+            height: 35%;
+            z-index: 15;
+            background-image: url("pica/tree-modified.png");
+            background-size: cover;
+            background-position: center;
+
+            border: 1px solid green;
+            box-sizing: border-box;
+
+        }
     </style>
 </head>
 
@@ -115,10 +131,12 @@
             <div id="rotationProtText">Поверни экран в горизонтальное положение и кликни, чтобы развернуть на весь экран
             </div>
         </div>
+        <div id="changer" style="top: -35%"></div>
         <div id="cells"></div>
     </div>
 </body>
 <script>
+
     function getRandomInt(max) {
         return Math.floor(Math.random() * max);
     }
@@ -186,6 +204,7 @@
         const selectedImg = parseInt(prot.dataset.img);
         let percent = 0;
         if (selected.includes(selectedImg)) {
+
             if (game == 1) {
                 res1 = selected.length;
                 percent = res1 / 30 * 100;
@@ -211,13 +230,13 @@
             if (game > 3) game = 1;
             selected = [];
             step = 3;
+
         } else {
             selected.push(selectedImg);
             step += 1;
         }
-        console.log(prot, selectedImg, selected, game, step);
-        clearImgs();
-        setImgs();
+        //clearImgs();
+        changingTick(true);
     }
     //alert("Выбирай каждый раз новую картинку");
     function toggleFullScreen() {
@@ -235,8 +254,41 @@
         false,
     );
 
+        
+    const CHNG_SPEED = 1.0;
+    const CHNG_TICK = 16.66;
+
+    var isChanging = true;
+    const changerElement = document.getElementById("changer");
+    function changingTick(start = false) {
+        if (start) isChanging = true;
+        let ceTop = parseFloat(changerElement.style.top.split("%")[0]);
+        ceTop += CHNG_SPEED;
+
+        let line = Math.floor (ceTop/20);
+        //if (line < 0) line = 0;
+
+        for (let index = (line)*6; index >= 0 && index < imgElements.length && index < (line+1)*6; index++) {
+            const element = imgElements[index];
+            element.classList.toggle("cell-img-empty", true);
+        }
+
+        if (ceTop>100) {
+            ceTop = -35;
+            isChanging = false;
+        }
+        changerElement.style.top = ceTop.toFixed(2)+"%";
+        if (isChanging) {
+            setTimeout(changingTick, CHNG_TICK);
+        } else {
+            setImgs();
+        }
+    }
+
+
     createImgs();
-    setImgs();
+    changingTick(true);
+    //setImgs();
 </script>
 
 </html>
