@@ -174,7 +174,7 @@
             const imgName = imgs[imgIndex];
             imgs.splice(imgIndex, 1);
 
-            imgElement.src = "./pica/" + imgName + ".bmp";
+            imgElement.src = "./pica/" + imgName + "-modified.png";
             imgElement.classList.toggle("cell-img-empty", false);
             imgElement.parentElement.querySelector('.cell-prot').dataset.img = imgName;
         });
