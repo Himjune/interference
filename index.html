@@ -32,7 +32,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.9);
         }
 
         #rotationProtText {
@@ -112,10 +112,47 @@
             background-image: url("pica/tree-modified.png");
             background-size: cover;
             background-position: center;
+        }
 
-            border: 1px solid green;
-            box-sizing: border-box;
+        .info-screen {
+            z-index: 15;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 1rem;
+        }
+        .info-main {
+            width: 100%;
+            height: 75%;
+            text-align: center;
+            padding: 1rem;
 
+            color: white;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 2rem;
+            text-align: center;
+        }
+        .info-cont {
+            width: 100%;
+            height: 25%;
+            text-align: center;
+            padding: 1rem;
+            
+            color: white;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 3rem;
+            text-align: center;
+        }
+        .info-prot {
+            z-index: 14;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
@@ -131,6 +168,48 @@
             <div id="rotationProtText">Поверни экран в горизонтальное положение и кликни, чтобы развернуть на весь экран
             </div>
         </div>
+        
+        <div id="infoStart" class="info-screen">
+            <div class="info-prot" onclick="infoTap(this)"></div>
+            <div class="info-main">
+                Выбирай каждый раз новый элемент, который не выбирал раньше.<br>
+                <ul>
+                    <li><img class="info-img" src="pica/10-modified.png"> / <img class="info-img" src="pica/24-modified.png"> - это разные элементы, они повернуты в разные стороны, их можно нажимать в одной серии </li>
+                    <li><img class="info-img" src="pica/2-modified.png"> / <img class="info-img" src="pica/31-modified.png"> - это разные элементы, они разных цветов, их можно нажимать в одной серии </li>
+                </ul>
+            </div>
+            <div class="info-cont">
+                Всего будет 3 серии, кликни по экрану, чтобы начать первую
+            </div>
+        </div>
+
+        <div id="infoCont" class="info-screen" style="display: none;">
+            <div class="info-prot" onclick="infoTap(this)"></div>
+            <div class="info-main">
+                Ты это уже нажимал!<br>
+                Круто! Ты прошел <span id="curSerTitle">первую</span> серию на <span id="curSerPercent">xx.xx</span>%!<br>
+                Попробуй еще раз, сначала! Забыли предыдущую серию, ты снова можешь нажимать на любой элемент, но не выбирай те элементы, что уже использовал в этой новой серии.
+            </div>
+            <div class="info-cont">
+                Кликни по экрану, чтобы начать <span id="nextSerTitle">вторую</span> серию
+            </div>
+        </div>
+        
+        <div id="infoEnd" class="info-screen" style="display: none;">
+            <div class="info-prot"></div>
+            <div class="info-main">
+                Ты это уже нажимал!<br>
+                Круто! Ты прошел:<br>
+
+                первую серию на <span id="firstSerPercent">xx.xx</span>%<br>
+                вторую серию на <span id="secondSerPercent">xx.xx</span>%<br>
+                третью серию на <span id="thirdSerPercent">xx.xx</span>%<br>
+            </div>
+            <div class="info-cont">
+                Ты успешно завершил серии, обратись к агенту за продолжением
+            </div>
+        </div>
+
         <div id="changer" style="top: -35%"></div>
         <div id="cells"></div>
     </div>
@@ -198,6 +277,10 @@
         });
     }
 
+    function infoTap(element) {
+        element.parentElement.style.display = 'none';
+    }
+
     function cellTap(prot) {
         if (!prot.dataset.img || prot.dataset.img == "0") return;
 
@@ -207,13 +290,31 @@
 
             if (game == 1) {
                 res1 = selected.length;
-                percent = res1 / 30 * 100;
+                percent = (res1 / 30 * 100).toFixed(2);
+
+                document.getElementById("curSerTitle").innerText = "первую";
+                document.getElementById("curSerPercent").innerText = percent;
+                document.getElementById("firstSerPercent").innerText = percent;
+                document.getElementById("nextSerTitle").innerText = "вторую";
+                document.getElementById("infoCont").style.display = "block";
             } else if (game == 2) {
                 res2 = selected.length;
-                percent = res2 / 30 * 100;
+                percent = (res2 / 30 * 100).toFixed(2);
+
+                document.getElementById("curSerTitle").innerText = "вторую";
+                document.getElementById("curSerPercent").innerText = percent;
+                document.getElementById("secondSerPercent").innerText = percent;
+                document.getElementById("nextSerTitle").innerText = "третью";
+                document.getElementById("infoCont").style.display = "block";
             } else if (game == 3) {
                 res3 = selected.length;
-                percent = res3 / 30 * 100;
+                percent = (res3 / 30 * 100).toFixed(2);
+
+                document.getElementById("curSerTitle").innerText = "третью";
+                document.getElementById("curSerPercent").innerText = percent;
+                document.getElementById("thirdSerPercent").innerText = percent;
+                document.getElementById("nextSerTitle").innerText = "вторую";
+                document.getElementById("infoEnd").style.display = "block";
             }
             game += 1;
             if (game > 3) game = 1;
@@ -270,6 +371,7 @@
         if (isChanging) {
             setTimeout(changingTick, CHNG_TICK);
         } else {
+            clearImgs();
             setImgs();
         }
     }
