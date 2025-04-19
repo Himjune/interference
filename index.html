@@ -154,13 +154,35 @@
             width: 100%;
             height: 100%;
         }
+
+        #nameScreen {
+            position: absolute;
+            z-index: 100;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            color: white;
+            font-size: 3rem;
+            padding: 3rem;
+        }
+        #nameInput {
+            height: 3rem;
+            font-size: 3rem;
+        }
+        #nameBtn {
+            font-size: 3rem;
+        }
     </style>
 </head>
 
 <body>
-    <div id="info">
-        <h1 id="infoTitle"></h1>
-        <div id="infoText"></div>
+    
+    <div id="nameScreen" data-csrf="{CFRF}">
+        <label id="nameLabel">Введите имя</label>
+        <input type="text" id="nameInput"/>
+        <button id="nameBtn" onclick="setName(this)">Войти</button>
     </div>
 
     <div id="game">
@@ -215,6 +237,25 @@
     </div>
 </body>
 <script>
+    function setName(){
+        const name = document.getElementById("nameInput").value;
+        console.log(name);
+        localStorage.setItem("userName", name);
+        checkName();
+    }
+    function checkName(){
+        if (window.localStorage) {
+            const user = localStorage.getItem("userName");
+            if (user && user.length > 0) {
+                document.getElementById("nameScreen").style.display = "none";
+            } else {
+                document.getElementById("nameScreen").style.display = "block";
+            }
+        } else {
+            document.getElementById("nameScreen").style.display = "none";
+        }
+    }
+    checkName();
 
     function getRandomInt(max) {
         return Math.floor(Math.random() * max);
