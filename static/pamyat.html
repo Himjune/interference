@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Запоминай!</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #game {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            background-image: url("pica/fon.bmp");
+            background-position: center;
+            background-size: cover;
+        }
+
+        #rotationProt {
+            position: absolute;
+            z-index: 20;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        #rotationProtText {
+            color: white;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 3rem;
+            display: block;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        @media (orientation: landscape) {
+            #rotationProt {
+                display: block;
+            }
+            #game:fullscreen #rotationProt {
+                display: none;
+            }
+        }
+
+        @media (orientation: portrait) {
+            #rotationProt {
+                display: block;
+            }
+        }
+
+        #cells {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .cell {
+            width: 16.6%;
+            height: 20%;
+            display: inline-block;
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+
+        .cell-prot {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+
+        .cell-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            outline: 0;
+            outline-offset: 0;
+        }
+        .cell-img-empty {
+            visibility: hidden;
+        }
+
+        #changer {
+            position: absolute;
+            top: -35%;
+            left: 0;
+            width: 100%;
+            height: 35%;
+            z-index: 15;
+            background-image: url("pica/tree-modified.png");
+            background-size: cover;
+            background-position: center;
+        }
+
+        .info-screen {
+            z-index: 15;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 1rem;
+        }
+        .info-main {
+            width: 100%;
+            height: 75%;
+            text-align: center;
+            padding: 1rem;
+
+            color: white;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 2rem;
+            text-align: center;
+        }
+        .info-cont {
+            width: 100%;
+            height: 25%;
+            text-align: center;
+            padding: 1rem;
+            
+            color: white;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 3rem;
+            text-align: center;
+        }
+        .info-prot {
+            z-index: 14;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #nameScreen {
+            position: absolute;
+            z-index: 100;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            color: white;
+            font-size: 3rem;
+            padding: 3rem;
+        }
+        #nameInput {
+            height: 3rem;
+            font-size: 3rem;
+        }
+        #nameBtn {
+            font-size: 3rem;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div id="nameScreen" data-csrf="{CFRF}">
+        <label id="nameLabel">Введите имя</label>
+        <input type="text" id="nameInput"/>
+        <button id="nameBtn" onclick="setName(this)">Войти</button>
+    </div>
+
+    <div id="game">
+        <div id="rotationProt">
+            <div id="rotationProtText">Поверни экран в горизонтальное положение и кликни, чтобы развернуть на весь экран
+            </div>
+        </div>
+        
+        <div id="infoStart" class="info-screen">
+            <div class="info-prot" onclick="infoTap(this)"></div>
+            <div class="info-main">
+                Выбирай каждый раз новый элемент, который не выбирал раньше.<br>
+                <ul>
+                    <li><img class="info-img" src="pica/10-modified.png"> / <img class="info-img" src="pica/24-modified.png"> - это разные элементы, они повернуты в разные стороны, их можно нажимать в одной серии </li>
+                    <li><img class="info-img" src="pica/2-modified.png"> / <img class="info-img" src="pica/31-modified.png"> - это разные элементы, они разных цветов, их можно нажимать в одной серии </li>
+                </ul>
+            </div>
+            <div class="info-cont">
+                Всего будет 3 серии, кликни по экрану, чтобы начать первую
+            </div>
+        </div>
+
+        <div id="infoCont" class="info-screen" style="display: none;">
+            <div class="info-prot" onclick="infoTap(this)"></div>
+            <div class="info-main">
+                Ты это уже нажимал!<br>
+                Круто! Ты прошел <span id="curSerTitle">первую</span> серию на <span id="curSerPercent">xx.xx</span>%!<br>
+                Попробуй еще раз, сначала! Забыли предыдущую серию, ты снова можешь нажимать на любой элемент, но не выбирай те элементы, что уже использовал в этой новой серии.
+            </div>
+            <div class="info-cont">
+                Кликни по экрану, чтобы начать <span id="nextSerTitle">вторую</span> серию
+            </div>
+        </div>
+        
+        <div id="infoEnd" class="info-screen" style="display: none;">
+            <div class="info-prot"></div>
+            <div class="info-main">
+                Ты это уже нажимал!<br>
+                Круто! Ты прошел:<br>
+
+                первую серию на <span id="firstSerPercent">xx.xx</span>%<br>
+                вторую серию на <span id="secondSerPercent">xx.xx</span>%<br>
+                третью серию на <span id="thirdSerPercent">xx.xx</span>%<br>
+            </div>
+            <div class="info-cont">
+                Ты успешно завершил серии, обратись к агенту за продолжением
+            </div>
+        </div>
+
+        <div id="changer" style="top: -35%"></div>
+        <div id="cells"></div>
+    </div>
+</body>
+<script>
+
+    function generateUUID() { // Public Domain/MIT
+        var d = new Date().getTime();//Timestamp
+        var d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16;//random number between 0 and 16
+            if(d > 0){//Use timestamp until depleted
+                r = (d + r)%16 | 0;
+                d = Math.floor(d/16);
+            } else {//Use microseconds since page-load if supported
+                r = (d2 + r)%16 | 0;
+                d2 = Math.floor(d2/16);
+            }
+            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+    }
+
+    var uuid = "nouuid";
+    if (window.localStorage) {
+        uuid = localStorage.getItem("userUUID")
+        if (!uuid) {
+            uuid = generateUUID();
+            localStorage.setItem("userUUID", uuid);
+        }
+    }
+    function setName(){
+        const name = document.getElementById("nameInput").value;
+        console.log(name);
+        localStorage.setItem("userName", name);
+        checkName();
+    }
+    function checkName(){
+        if (window.localStorage) {
+            const user = localStorage.getItem("userName");
+            if (user && user.length > 0) {
+                document.getElementById("nameScreen").style.display = "none";
+            } else {
+                document.getElementById("nameScreen").style.display = "block";
+            }
+        } else {
+            document.getElementById("nameScreen").style.display = "none";
+        }
+    }
+    checkName();
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+    }
+
+    var res1 = 0;
+    var res2 = 0;
+    var res3 = 0;
+
+    var game = 1;
+    var selected = [];
+    var step = 3;
+    var imgElements = document.querySelectorAll('.cell-img');
+
+    function clearImgs() {
+        document.querySelectorAll('.cell-img').forEach((el) => {
+            el.src = "";
+            el.classList.toggle("cell-img-empty", true);
+        })
+
+        document.querySelectorAll('.cell-prot').forEach((el) => {
+            el.dataset.img = "0";
+        })
+    }
+
+    const gameElement = document.getElementById("game");
+
+    const CELL_TEMPLATE = `<div class="cell"><div class="cell-prot" onclick="cellTap(this)"></div><img class="cell-img cell-img-empty" src=""/></div>`
+    function createImgs () {
+        let html = ""
+        for (let index = 0; index < 6*5; index++) {
+            html+= CELL_TEMPLATE;
+        }
+        document.getElementById("cells").innerHTML = html;
+        imgElements = document.querySelectorAll('.cell-img');
+    }
+
+    function setImgs() {
+        let imgs = selected.slice();
+        while (imgs.length < step) {
+            let img = getRandomInt(60) + 1;
+            if (!imgs.includes(img)) imgs.push(img);
+        }
+
+        let places = []
+        while (places.length < step) {
+            let place = getRandomInt(30);
+            if (!places.includes(place)) places.push(place);
+        }
+
+        places.forEach(element => {
+            const imgElement = imgElements[element];
+            const imgIndex = getRandomInt(imgs.length);
+            const imgName = imgs[imgIndex];
+            imgs.splice(imgIndex, 1);
+
+            imgElement.src = "./pica/" + imgName + "-modified.png";
+            imgElement.classList.toggle("cell-img-empty", false);
+            imgElement.parentElement.querySelector('.cell-prot').dataset.img = imgName;
+        });
+    }
+
+    function infoTap(element) {
+        element.parentElement.style.display = 'none';
+    }
+
+    function cellTap(prot) {
+        if (!prot.dataset.img || prot.dataset.img == "0") return;
+
+        const selectedImg = parseInt(prot.dataset.img);
+        let percent = 0;
+        if (selected.includes(selectedImg)) {
+
+            if (game == 1) {
+                res1 = selected.length;
+                percent = (res1 / 30 * 100).toFixed(2);
+
+                document.getElementById("curSerTitle").innerText = "первую";
+                document.getElementById("curSerPercent").innerText = percent;
+                document.getElementById("firstSerPercent").innerText = percent;
+                document.getElementById("nextSerTitle").innerText = "вторую";
+                document.getElementById("infoCont").style.display = "block";
+            } else if (game == 2) {
+                res2 = selected.length;
+                percent = (res2 / 30 * 100).toFixed(2);
+
+                document.getElementById("curSerTitle").innerText = "вторую";
+                document.getElementById("curSerPercent").innerText = percent;
+                document.getElementById("secondSerPercent").innerText = percent;
+                document.getElementById("nextSerTitle").innerText = "третью";
+                document.getElementById("infoCont").style.display = "block";
+            } else if (game == 3) {
+                res3 = selected.length;
+                percent = (res3 / 30 * 100).toFixed(2);
+
+                document.getElementById("curSerTitle").innerText = "третью";
+                document.getElementById("curSerPercent").innerText = percent;
+                document.getElementById("thirdSerPercent").innerText = percent;
+                document.getElementById("nextSerTitle").innerText = "вторую";
+                document.getElementById("infoEnd").style.display = "block";
+
+                fetch("/results/"+uuid, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ uuid: uuid, one: res1, two: res2, tri: res3 })
+                });
+            }
+            game += 1;
+            if (game > 3) game = 1;
+            selected = [];
+            step = 3;
+
+        } else {
+            selected.push(selectedImg);
+            step += 1;
+        }
+        //clearImgs();
+        changingTick(true);
+    }
+    //alert("Выбирай каждый раз новую картинку");
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+
+    document.getElementById('rotationProt').addEventListener(
+        "click", (e) => {
+            gameElement.requestFullscreen();
+        },
+        false,
+    );
+
+        
+    const CHNG_SPEED = 1.0;
+    const CHNG_TICK = 16.66;
+
+    var isChanging = true;
+    const changerElement = document.getElementById("changer");
+    function changingTick(start = false) {
+        if (start) isChanging = true;
+        let ceTop = parseFloat(changerElement.style.top.split("%")[0]);
+        ceTop += CHNG_SPEED;
+
+        let line = Math.floor (ceTop/20);
+        //if (line < 0) line = 0;
+
+        for (let index = (line)*6; index >= 0 && index < imgElements.length && index < (line+1)*6; index++) {
+            const element = imgElements[index];
+            element.classList.toggle("cell-img-empty", true);
+        }
+
+        if (ceTop>100) {
+            ceTop = -35;
+            isChanging = false;
+        }
+        changerElement.style.top = ceTop.toFixed(2)+"%";
+        if (isChanging) {
+            setTimeout(changingTick, CHNG_TICK);
+        } else {
+            clearImgs();
+            setImgs();
+        }
+    }
+
+
+    createImgs();
+    changingTick(true);
+    //setImgs();
+</script>
+
+</html>
