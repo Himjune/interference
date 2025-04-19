@@ -9,7 +9,8 @@ from flask import send_from_directory
 app = Flask(__name__)
 @app.route('/results/<uuid>', methods=['POST'])
 def results(uuid):
-    with open('file.json', 'w') as f:
+    dt = datetime.now()
+    with open('./reports/'+uuid+dt.strftime("-%H%M%S%f")+'.json', 'w') as f:
         json.dump(request.json, f)
 
     return jsonify({"uuid": uuid})
