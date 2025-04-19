@@ -134,7 +134,7 @@
 
             color: white;
             font-family: Verdana, Geneva, Tahoma, sans-serif;
-            font-size: 2rem;
+            font-size: 1rem;
             text-align: center;
         }
         .info-cont {
@@ -144,7 +144,7 @@
             
             color: white;
             font-family: Verdana, Geneva, Tahoma, sans-serif;
-            font-size: 3rem;
+            font-size: 1.5rem;
             text-align: center;
         }
         .info-prot {
@@ -154,6 +154,9 @@
             left: 0;
             width: 100%;
             height: 100%;
+        }
+        .info-img {
+            height: 3rem;
         }
 
         #nameScreen {
@@ -196,10 +199,8 @@
             <div class="info-prot" onclick="infoTap(this)"></div>
             <div class="info-main">
                 Выбирай каждый раз новый элемент, который не выбирал раньше.<br>
-                <ul>
-                    <li><img class="info-img" src="pica/10-modified.png"> / <img class="info-img" src="pica/24-modified.png"> - это разные элементы, они повернуты в разные стороны, их можно нажимать в одной серии </li>
-                    <li><img class="info-img" src="pica/2-modified.png"> / <img class="info-img" src="pica/31-modified.png"> - это разные элементы, они разных цветов, их можно нажимать в одной серии </li>
-                </ul>
+                <img class="info-img" src="pica/10-modified.png"> / <img class="info-img" src="pica/24-modified.png"> - это разные элементы, они повернуты в разные стороны, их можно нажимать в одной серии<br>
+                <img class="info-img" src="pica/2-modified.png"> / <img class="info-img" src="pica/31-modified.png"> - это разные элементы, они разных цветов, их можно нажимать в одной серии<br>
             </div>
             <div class="info-cont">
                 Всего будет 3 серии, кликни по экрану, чтобы начать первую
@@ -383,12 +384,13 @@
                 document.getElementById("nextSerTitle").innerText = "вторую";
                 document.getElementById("infoEnd").style.display = "block";
 
+                const user = localStorage.getItem("userName");
                 fetch("/results/"+uuid, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ uuid: uuid, one: res1, two: res2, tri: res3 })
+                    body: JSON.stringify({ name: user, uuid: uuid, one: res1, two: res2, tri: res3 })
                 });
             }
             game += 1;
