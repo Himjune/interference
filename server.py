@@ -18,6 +18,8 @@ def results(uuid):
 @app.route('/<path:path>')
 def serve_html(path):
     if path == "pamyat": path = "pamyat.html"
+    if path == "vzlom": path = "vzlom.html"
+    if path == "kontrol": path = "kontrol.html"
     # Using request args for path will expose you to directory traversal attacks
     return send_from_directory('static', path)
 
