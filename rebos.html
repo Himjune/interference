@@ -1,0 +1,263 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" 
+  "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+ <head>
+   <title>ReBOS</title>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style>
+    body {
+        padding: 0;
+        margin: 0;
+    }
+    
+    #game {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+        position: absolute;
+        height: 100%;
+        left: 50%;
+        transform: translate(-50%, 0%);
+        top: 0;
+
+        aspect-ratio: 9/16;
+    }
+
+    #tapper {
+        position: absolute;
+        background-color: rgba(180, 79, 79, 0.1);
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        z-index: 2;
+    }
+    #gameInfo {
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.66);
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        z-index: 1;
+
+        color: whitesmoke;
+        font-size: 3rem;
+    }
+    #gameInfo div {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+        padding: 1rem;
+    }
+    #gameTitle { height: 20%; }
+    #gameTip { height: 50%; }
+    #gameTap { height: 30%;}
+
+    .ellipse {
+        display: none;
+        width: 60%;
+        aspect-ratio: 1/1;
+        border-radius: 50%;
+        background-color: rebeccapurple;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .ellipse-text {
+        display: inline-block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 2rem;
+    }
+    
+    .ellipse-red {background-color: red;}
+    .ellipse-red .ellipse-text {color: darkred;}
+    .ellipse-green {background-color: green;}
+    .ellipse-green .ellipse-text {color: darkgreen;}
+    .ellipse-blue {background-color: blue;}
+    .ellipse-blue .ellipse-text {color: darkblue;}
+    .ellipse-yellow {background-color: yellow;}
+    .ellipse-yellow .ellipse-text {color: darkgoldenrod;}
+    
+</style>
+</head>
+ <body>
+    <div id="tapper"></div>
+    <div id="game">
+        <div id="gameInfo">
+            <div id="gameTitle">ReBOS</div>
+            <div id="gameTip">Инструкция</div>
+            <div id="gameTap">Тапни</div>
+        </div>
+        <div id="ellipseRed" class="ellipse ellipse-red" style="display: none;">
+            <span class="ellipse-text">127.0.0.1:8000</span>
+        </div>
+        <div id="ellipseGreen" class="ellipse ellipse-green" style="display: none;">
+            <span class="ellipse-text">127.0.0.1:8000</span>
+        </div>
+        <div id="ellipseBlue" class="ellipse ellipse-blue" style="display: none;">
+            <span class="ellipse-text">127.0.0.1:8000</span>
+        </div>
+        <div id="ellipseYellow" class="ellipse ellipse-yellow" style="display: none;">
+            <span class="ellipse-text">127.0.0.1:8000</span>
+        </div>
+    </div>
+ </body> 
+ <script>
+    const ELLIPSE_SHOWING = 900;
+
+    var stage = 0;
+    var stageStep = 0;
+    var stagePhase = 0;
+    var curEllipse = null;
+    var isTapped = false;
+
+    const ellipses = [
+        document.getElementById("ellipseRed"),
+        document.getElementById("ellipseGreen"),
+        document.getElementById("ellipseBlue"),
+        document.getElementById("ellipseYellow"),
+    ]
+
+    const stages = [
+        {
+            isTip: true,
+            tip: "Здание на реакцию. Состотит из трех серий: тренировочная и две основных. Кликайте по экрану, когда видите любой круг",
+            tap: "Готовы? Нажмите по экрану, чтобы начать тренировку"
+        },
+        {
+            isTip: false,
+            isRedAllowed: true,
+            phases: [
+                {end: 8, rndStart: 750, rndInterval: 500}
+            ]
+        },
+        {
+            isTip: true,
+            tip: "Тренировка окончена, переходим к первой серии. Кликайте по экрану, когда видите любой круг",
+            tap: "Готовы? Нажмите по экрану, чтобы начать первую серию"
+        },
+        {
+            isTip: false,
+            isRedAllowed: true,
+            phases: [
+                {end: 28, rndStart: 400, rndInterval: 500},
+                {end: 64, rndStart: 900, rndInterval: 1350},
+                {end: 92, rndStart: 400, rndInterval: 500},
+                {end: 128, rndStart: 900, rndInterval: 1350},
+            ]
+        },
+        {
+            isTip: true,
+            tip: "Первая серия окончена, переходим ко второй серии. Кликайте по экрану, когда видите круг, но только если он <span style='font-weight: bolder'>не красный</span>. С красным ничего не делайте.",
+            tap: "Готовы? Нажмите по экрану, чтобы начать третью серию"
+        },
+        {
+            isTip: false,
+            isRedAllowed: false,
+            phases: [
+                {end: 28, rndStart: 400, rndInterval: 500},
+                {end: 64, rndStart: 900, rndInterval: 1350},
+                {end: 92, rndStart: 400, rndInterval: 500},
+                {end: 128, rndStart: 900, rndInterval: 1350},
+            ]
+        }
+    ]
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+    }
+
+
+    const gameInfo = document.getElementById("gameInfo");
+    const gameTip = document.getElementById("gameTip");
+    const gameTap = document.getElementById("gameTap");
+
+    const errAudio = new Audio("error.mp3");
+
+    function tap() {
+        if (stages[stage].isTip) {
+            gameInfo.style.display = "none";
+            stage += 1;
+            stagePhase = 0;
+            stageStep = 0;
+
+            const curStage = stages[stage];
+            const curPhase = curStage.phases[stagePhase];
+
+            console.log(stagePhase, curStage, curPhase);
+            
+            setTimeout(ellipseShow, getRandomInt(curPhase.rndInterval)+curPhase.rndStart);
+    
+        } else {
+            const curStage = stages[stage];
+            const curPhase = curStage.phases[stagePhase];
+            isTapped = true;
+            if (!curEllipse) {
+                errAudio.play();
+            } else {
+
+            }
+
+
+        }
+        //tackt();
+    }
+
+    function showInfo() {
+        gameInfo.style.display = "block";
+        gameTip.innerText = stages[stage].tip;
+        gameTap.innerText = stages[stage].tap;
+    }
+
+    function ellipseHide() {
+        curEllipse.style.display = 'none';
+        curEllipse = null;
+
+        stageStep += 1;
+        if (stageStep > stages[stage].phases[stagePhase].end) {
+            stagePhase += 1;
+            if (stagePhase+1 > stages[stage].phases.length) {
+                stage += 1;
+                stagePhase = 0;
+                stageStep = 0;
+                showInfo();
+                return;
+            }
+        }
+        const curStage = stages[stage];
+        const curPhase = curStage.phases[stagePhase];
+        console.log(stageStep, stagePhase, curStage, curPhase);
+        
+
+        if (!isTapped && (curStage.isRedAllowed || curEllipse.id == "ellipseRed")) {
+            errAudio.play();
+        }
+        isTapped = false;
+
+        setTimeout(ellipseShow, getRandomInt(curPhase.rndInterval)+curPhase.rndStart);
+    }
+
+    function ellipseShow() {
+        isTapped = false;
+        const curStage = stages[stage];
+        const curPhase = curStage[stagePhase];
+        curEllipse = ellipses[getRandomInt(3)];
+        curEllipse.querySelector(".ellipse-text").innerText = 
+        getRandomInt(256)+'.'+getRandomInt(256)+'.'+
+        getRandomInt(256)+'.'+getRandomInt(256)+':'+
+        (getRandomInt(65535)+1)
+
+        curEllipse.style.display = 'block';
+        setTimeout(ellipseHide, ELLIPSE_SHOWING);
+    }
+
+    document.getElementById("tapper").addEventListener('click', tap);
+    //document.getElementById("tapper").addEventListener('touchstart', tap);
+    showInfo();
+</script>
+</html>
