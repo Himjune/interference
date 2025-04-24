@@ -74,14 +74,25 @@
 
         #cells {
             position: absolute;
+            display: flex;
+            flex-direction: column;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
         }
+
+        .cell-row {
+            flex-grow: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+        }
+
         .cell {
-            width: 16.6%;
-            height: 20%;
+            height: 100%;
+            flex-grow: 1;
+
             display: inline-block;
             position: relative;
             margin: 0;
@@ -131,7 +142,7 @@
             box-sizing: border-box;
             background-color: darkolivegreen;
             border: 1rem solid silver;
-            box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.7);
+            box-shadow: 20px 15px 15px rgba(0, 0, 0, 0.7);
         }
 
         .info-screen {
@@ -300,6 +311,11 @@
     }
     checkName();
 
+    const settings = {
+        rows: 5,
+        cols: 6
+    }
+
     const mode = {
         imgFolder: "./static/inter-tech/",
         imgPostfix: ".png",
@@ -331,12 +347,16 @@
     }
 
     const gameElement = document.getElementById("game");
-
+    const ROW_TEMPLATE = `<div class="cell-row">`
     const CELL_TEMPLATE = `<div class="cell"><div class="cell-prot" onclick="cellTap(this)"></div><img class="cell-img cell-img-empty" src=""/></div>`
     function createImgs () {
         let html = ""
-        for (let index = 0; index < 6*5; index++) {
-            html+= CELL_TEMPLATE;
+        for (let r=0; r < settings.rows; r++) {
+            html += ROW_TEMPLATE;
+            for (let c = 0; c < settings.cols; c++) {
+                html += CELL_TEMPLATE;
+            }
+            html += '</div>';
         }
         document.getElementById("cells").innerHTML = html;
         imgElements = document.querySelectorAll('.cell-img');
