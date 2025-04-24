@@ -22,10 +22,17 @@
             max-height: 100vh;
             padding: 0;
             margin: auto;
+            overflow: hidden;
+        }
+        #game.mode-classic {
             background-image: url("pica/fon.bmp");
             background-position: center;
             background-size: cover;
-            overflow: hidden;
+        }
+        #game.mode-tech {
+            box-sizing: border-box;
+            background-color: darkolivegreen;
+            border: 1rem solid silver;
         }
 
         #rotationProt {
@@ -112,9 +119,19 @@
             width: 100%;
             height: 35%;
             z-index: 15;
+        }
+        .mode-classic #changer {
             background-image: url("pica/tree-modified.png");
             background-size: cover;
             background-position: center;
+        }
+        .mode-tech #changer {
+            top: -100%;
+            height: 100%;
+            box-sizing: border-box;
+            background-color: darkolivegreen;
+            border: 1rem solid silver;
+            box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.7);
         }
 
         .info-screen {
@@ -189,7 +206,7 @@
         <button id="nameBtn" onclick="setName(this)">Войти</button>
     </div>
 
-    <div id="game">
+    <div id="game" class="mode-tech">
         <div id="rotationProt">
             <div id="rotationProtText">Поверни экран в горизонтальное положение
             </div>
@@ -239,7 +256,6 @@
     </div>
 </body>
 <script>
-
     function generateUUID() { // Public Domain/MIT
         var d = new Date().getTime();//Timestamp
         var d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
@@ -284,6 +300,12 @@
     }
     checkName();
 
+    const mode = {
+        imgFolder: "./static/inter-tech/",
+        imgPostfix: ".png",
+        imgCnt: 30
+    }
+
     function getRandomInt(max) {
         return Math.floor(Math.random() * max);
     }
@@ -323,7 +345,7 @@
     function setImgs() {
         let imgs = selected.slice();
         while (imgs.length < step) {
-            let img = getRandomInt(60) + 1;
+            let img = getRandomInt(mode.imgCnt) + 1;
             if (!imgs.includes(img)) imgs.push(img);
         }
 
@@ -339,7 +361,7 @@
             const imgName = imgs[imgIndex];
             imgs.splice(imgIndex, 1);
 
-            imgElement.src = "./pica/" + imgName + "-modified.png";
+            imgElement.src = mode.imgFolder + imgName + mode.imgPostfix;
             imgElement.classList.toggle("cell-img-empty", false);
             imgElement.parentElement.querySelector('.cell-prot').dataset.img = imgName;
         });
@@ -422,7 +444,7 @@
     );
 
         
-    const CHNG_SPEED = 1.0;
+    const CHNG_SPEED = 0.6;
     const CHNG_TICK = 16.66;
 
     var isChanging = true;
@@ -441,7 +463,7 @@
         }
 
         if (ceTop>100) {
-            ceTop = -35;
+            ceTop = -100;
             isChanging = false;
         }
         changerElement.style.top = ceTop.toFixed(2)+"%";
