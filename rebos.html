@@ -273,6 +273,15 @@
     }
 
     document.getElementById("tapper").addEventListener('click', tap);
+    document.body.addEventListener('keydown', (e) => {
+        if (e.key == " " ||
+            e.code == "Space" ||      
+            e.keyCode == 32      
+        ) {
+            tap();
+        }
+    });
+
     //document.getElementById("tapper").addEventListener('touchstart', tap);
     showInfo();
 </script>
