@@ -108,7 +108,7 @@
     </div>
  </body> 
  <script>
-    const ELLIPSE_SHOWING = 900;
+    const ELLIPSE_SHOWING = 300;
 
     var stage = 0;
     var stageStep = 0;
@@ -126,7 +126,7 @@
     const stages = [
         {
             isTip: true,
-            tip: "Здание на реакцию. Состотит из трех серий: тренировочная и две основных. Кликайте по экрану, когда видите любой круг",
+            tip: "Здание на реакцию. Состотит из трех серий: тренировочная и две основных. Кликайте по экрану, когда видите любой круг или слышите гласный звук",
             tap: "Готовы? Нажмите по экрану, чтобы начать тренировку"
         },
         {
@@ -138,7 +138,7 @@
         },
         {
             isTip: true,
-            tip: "Тренировка окончена, переходим к первой серии. Кликайте по экрану, когда видите любой круг",
+            tip: "Тренировка окончена, переходим к первой серии. Кликайте по экрану, когда видите любой круг или слышите гласный звук",
             tap: "Готовы? Нажмите по экрану, чтобы начать первую серию"
         },
         {
@@ -153,7 +153,7 @@
         },
         {
             isTip: true,
-            tip: "Первая серия окончена, переходим ко второй серии. Кликайте по экрану, когда видите круг, но только если он <span style='font-weight: bolder'>не красный</span>. С красным ничего не делайте.",
+            tip: "Первая серия окончена, переходим ко второй серии. Кликайте по экрану, когда видите круг или слышите гласный звук, но только если он <span style='font-weight: bolder'>не красный или не звук [а]</span>. С красным и звуком [а] ничего не делайте.",
             tap: "Готовы? Нажмите по экрану, чтобы начать третью серию"
         },
         {
@@ -178,6 +178,13 @@
     const gameTap = document.getElementById("gameTap");
 
     const errAudio = new Audio("error.mp3");
+    const vovels = [
+        new Audio("./static/rebos-vovels/ac.mp3"),
+        new Audio("./static/rebos-vovels/oc.mp3"),
+        new Audio("./static/rebos-vovels/uc.mp3"),
+        new Audio("./static/rebos-vovels/ec.mp3"),
+    ]
+    var curVovel = vovels[0];
 
     function tap() {
         if (stages[stage].isTip) {
@@ -218,6 +225,9 @@
         curEllipse.style.display = 'none';
         curEllipse = null;
 
+
+        //curVovel.pause();
+
         stageStep += 1;
         if (stageStep > stages[stage].phases[stagePhase].end) {
             stagePhase += 1;
@@ -234,9 +244,10 @@
         console.log(stageStep, stagePhase, curStage, curPhase);
         
 
-        if (!isTapped && (curStage.isRedAllowed || curEllipse.id == "ellipseRed")) {
+        /*if (!isTapped && (curStage.isRedAllowed || curEllipse.id == "ellipseRed")) {
             errAudio.play();
-        }
+        }*/
+
         isTapped = false;
 
         setTimeout(ellipseShow, getRandomInt(curPhase.rndInterval)+curPhase.rndStart);
@@ -246,7 +257,12 @@
         isTapped = false;
         const curStage = stages[stage];
         const curPhase = curStage[stagePhase];
-        curEllipse = ellipses[getRandomInt(3)];
+        const rand = getRandomInt(3)
+
+        curEllipse = ellipses[rand];
+        curVovel = vovels[rand];
+        curVovel.play();
+
         curEllipse.querySelector(".ellipse-text").innerText = 
         getRandomInt(256)+'.'+getRandomInt(256)+'.'+
         getRandomInt(256)+'.'+getRandomInt(256)+':'+
