@@ -52,10 +52,39 @@ function checkName(){
 }
 checkName();
 
+function parseIntoCSV(array) {
+    let parsed = "";
+    Object.keys(array[0]).forEach(key => {
+        parsed += key + ";"
+    });
+    parsed += "\n";
+    array.forEach(element => {
+        Object.values(element).forEach (value => {
+            parsed += value + ";"
+        })
+        parsed += "\n";
+    })
+    return parsed;
+}
+
 function saveLocal() {
-    const filename = "i_"+uuid+".json";
+    const filename = "i_"+uuid+".csv";
     const element = document.createElement('a');
-    element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(userStory)));
+    var filetext = "";
+    filetext += userStory.name + "\n";
+    filetext += userStory.uuid + "\n";
+
+    if (userStory.results.length > 0) {
+        filetext += parseIntoCSV(userStory.results);
+    }
+    filetext += "\n";
+
+    if (userStory.taps.length > 0) {
+        filetext += parseIntoCSV(userStory.taps);
+    }
+    filetext += "\n";
+
+    element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(filetext));
     element.setAttribute('download', filename);
     element.style.display = 'none';
     document.body.appendChild(element);
