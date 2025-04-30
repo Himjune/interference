@@ -266,62 +266,8 @@
         <div id="cells"></div>
     </div>
 </body>
+<script src="./common.js"></script>
 <script>
-    const userStory = {
-        name: "-name-",
-        uuid: "-uuid-",
-        res1: 0,
-        res2: 0,
-        res3: 0,
-        taps: []
-    }
-
-    function generateUUID() { // Public Domain/MIT
-        var d = new Date().getTime();//Timestamp
-        var d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16;//random number between 0 and 16
-            if(d > 0){//Use timestamp until depleted
-                r = (d + r)%16 | 0;
-                d = Math.floor(d/16);
-            } else {//Use microseconds since page-load if supported
-                r = (d2 + r)%16 | 0;
-                d2 = Math.floor(d2/16);
-            }
-            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-        });
-    }
-
-    var uuid = "nouuid";
-    if (window.localStorage) {
-        uuid = localStorage.getItem("userUUID")
-        if (!uuid) {
-            uuid = generateUUID();
-            localStorage.setItem("userUUID", uuid);
-        }
-        userStory.uuid = uuid;
-    }
-    function setName(){
-        const name = document.getElementById("nameInput").value;
-        console.log(name);
-        localStorage.setItem("userName", name);
-        checkName();
-    }
-    function checkName(){
-        if (window.localStorage) {
-            const user = localStorage.getItem("userName");
-            if (user && user.length > 0) {
-                document.getElementById("nameScreen").style.display = "none";
-            } else {
-                document.getElementById("nameScreen").style.display = "block";
-            }
-            userStory.name = user;
-        } else {
-            document.getElementById("nameScreen").style.display = "none";
-        }
-    }
-    checkName();
-
     const settings = {
         rows: 5,
         cols: 6
@@ -343,6 +289,8 @@
 
     var startTs = 0;
     var setTs = 0;
+    var timeSum = 0;
+
     var game = 1;
     var selected = [];
     var step = 3;
@@ -405,17 +353,7 @@
     function infoTap(element) {
         element.parentElement.style.display = 'none';
         startTs = Date.now();
-    }
-
-    function saveLocal() {
-        const filename = "i_"+uuid+".json";
-        const element = document.createElement('a');
-        element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(userStory)));
-        element.setAttribute('download', filename);
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
+        timeSum = 0;
     }
 
     function cellTap(prot) {
@@ -433,12 +371,13 @@
             tapTs: tapTs,
             diff: tapTs - Math.max(startTs, setTs)
         });
+        timeSum += tapTs - Math.max(startTs, setTs);
 
         if (selected.includes(selectedImg)) {
 
             if (game == 1) {
                 res1 = selected.length;
-                userStory.res1 = res1;
+                userStory.results.push({game: game, memorized: selected.length, gameTime: timeSum});
 
                 percent = (res1 / 30 * 100).toFixed(2);
 
@@ -449,7 +388,7 @@
                 document.getElementById("infoCont").style.display = "block";
             } else if (game == 2) {
                 res2 = selected.length;
-                userStory.res2 = res2;
+                userStory.results.push({game: game, memorized: selected.length, gameTime: timeSum});
 
                 percent = (res2 / 30 * 100).toFixed(2);
 
@@ -460,7 +399,7 @@
                 document.getElementById("infoCont").style.display = "block";
             } else if (game == 3) {
                 res3 = selected.length;
-                userStory.res3 = res3;
+                userStory.results.push({game: game, memorized: selected.length, gameTime: timeSum});
 
                 percent = (res3 / 30 * 100).toFixed(2);
 
@@ -472,21 +411,15 @@
 
                 const user = localStorage.getItem("userName");
                 try {
-                    fetch("/results/"+uuid, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ name: user, uuid: uuid, one: res1, two: res2, tri: res3 })
-                    });
+                    saveExternal();
                 } catch (error) {
-                    console.log("POSTErr", error);
+                    console.log("EXTErr", error);
                 }
 
                 try {
                     saveLocal();
                 } catch (error) {
-                    console.log("LOCALErr", error);
+                    console.log("LOCErr", error);
                 }
             }
             game += 1;
@@ -500,14 +433,6 @@
         }
         //clearImgs();
         changingTick(true);
-    }
-    //alert("Выбирай каждый раз новую картинку");
-    function toggleFullScreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-        } else if (document.exitFullscreen) {
-            document.exitFullscreen();
-        }
     }
 
     document.getElementById('rotationProt').addEventListener(
