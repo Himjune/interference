@@ -359,6 +359,7 @@
     function cellTap(prot) {
         const tapTs = Date.now();
         if (!prot.dataset.img || prot.dataset.img == "0") return;
+        if (isChanging) return;
 
 
         const selectedImg = parseInt(prot.dataset.img);
