@@ -324,6 +324,7 @@
     }
 
     function setImgs() {
+        document.getElementById("cells").style.display = "none";
         let imgs = selected.slice();
         while (imgs.length < step) {
             let img = getRandomInt(mode.imgCnt) + 1;
@@ -347,6 +348,7 @@
             imgElement.parentElement.querySelector('.cell-prot').dataset.img = imgName;
         });
 
+        document.getElementById("cells").style.display = "flex";
         setTs = Date.now();
     }
 
